@@ -1,0 +1,938 @@
+@font-face {
+    font-family: 'Helvetica';
+    src: url('fonts/Helvetica.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Helvetica Bold';
+    src: url('fonts/Helvetica-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'PPMondwest';
+    src: url('fonts/PPMondwest-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Base Reset & Variables */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-color: #070707;
+    --fg-color: #f0f0f0;
+    --accent-grey: #666666;
+    --accent-blue: #00E5FF; /* Azul Ciberpunk brillante */
+    --font-mono: 'PPMondwest', 'Space Mono', monospace;
+    --font-sans: 'Helvetica', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--fg-color);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+}
+
+/* Heavy Xerox Photocopy Grain / Noise Overlay (SVG HD Animado) */
+.noise-overlay {
+    position: fixed;
+    top: -10%;
+    left: -10%;
+    width: 120vw;
+    height: 120vh;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.7; /* Opacidad alta para que el negro marque bien los puntos sobre lo blanco */
+    /* Puntillismo perfecto: Puntos geométricos nítidos y pequeños */
+    background-image: radial-gradient(circle, #000 45%, transparent 45%);
+    background-size: 3px 3px; /* Puntos súper pequeños y juntos */
+    animation: noiseAnim 0.8s step-end infinite; /* Animación más lenta y sutil */
+}
+
+@keyframes noiseAnim {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-1px, 1px); }
+    50% { transform: translate(1px, -1px); }
+    75% { transform: translate(1px, 1px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* Background Collage Container */
+.collage-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+/* Disruptive collage letters - HUGE HORIZONTAL BANDS */
+.collage-item {
+    position: absolute;
+    opacity: 0.15; /* Más tenue para no robar protagonismo */
+    filter: invert(1) contrast(1.2);
+    mix-blend-mode: screen;
+    width: 150vw; /* Que cubra todo el ancho e incluso más para poder moverlo en X */
+    height: 25vh; /* Obligamos a que cada imagen sea una franja de un cuarto de altura */
+    max-width: none;
+    object-fit: cover; /* Esto "recorta" la imagen para que encaje perfecto en la franja sin deformarse */
+}
+
+.collage-item.back1 {
+    top: 0;
+    left: -15%;
+}
+
+.collage-item.back2 {
+    top: 46vh;
+    left: -15%;
+}
+
+.collage-item.back3 {
+    top: 70vh;
+    left: -12%;
+}
+
+.collage-item.back4 {
+    top: 75vh;
+    left: -10%;
+}
+
+/* Background "NOUS HERMES 2" Faded Text */
+.bg-text {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 15vw;
+    font-weight: 900;
+    white-space: nowrap;
+    opacity: 0.05; 
+    z-index: 1;
+    font-family: Impact, sans-serif;
+    letter-spacing: -5px;
+    /* Dither effect on text */
+    text-shadow: 2px 2px 0 #000, -2px -2px 0 #000;
+}
+
+/* =========================================
+   HORIZONTAL SCROLL LAYOUT
+   ========================================= */
+.horizontal-wrapper {
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+.horizontal-container {
+    display: flex;
+    width: 200vw; /* 2 secciones de 100vw */
+    height: 100vh;
+}
+
+/* Hero Section Container */
+.hero-section {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 4rem;
+    overflow: hidden;
+    /* z-index: 2; Eliminado para que las capas interiores puedan atravesar el ruido global */
+}
+
+/* Top Navigation */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-text {
+    height: 40px; 
+    filter: invert(1); 
+}
+
+.terminal-icon svg {
+    width: 35px;
+    height: 35px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--fg-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-family: var(--font-mono); /* Using pixel font for nav */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+.nav-links a:hover {
+    color: var(--accent-grey);
+}
+
+/* Main Content Layout */
+.hero-content {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    position: relative;
+    padding-left: 80px; /* Compensación por el sidebar fijo */
+    /* z-index: 5; Eliminado para que la mascota pueda cruzar la barrera del ruido */
+}
+
+/* Left Sidebar Fixed (Scrollspy) */
+.sidebar-left {
+    position: fixed;
+    top: 50%;
+    left: 4rem;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 60vh;
+    width: 60px;
+    z-index: 50; /* Lo mantiene sobre el contenido general */
+}
+
+.tech-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    color: rgba(255, 255, 255, 0.5); /* Color base de los íconos inactivos */
+    transition: all 0.4s ease;
+    text-decoration: none;
+}
+
+.icon-circle svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* Estado activo e hover (Luz Azul) */
+.icon-circle.active, .icon-circle:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+}
+
+.section-number {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.section-number .number {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.section-number .line {
+    width: 100%;
+    height: 3px;
+    background-color: var(--fg-color);
+}
+
+/* Center Mascot Container */
+.mascot-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    max-width: 550px;
+    z-index: 10000; /* La traemos por encima de la capa de ruido (9999) */
+}
+
+.blob-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* Aspect ratio 1:1 */
+    background-color: #cecccc;
+    border-radius: 60% 40% 45% 55% / 50% 55% 45% 50%;
+    /* Create halftone pattern background inside blob */
+    background-image: radial-gradient(#000 25%, transparent 25%), radial-gradient(#000 25%, transparent 25%);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+    background-blend-mode: multiply;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.mascot-img {
+    position: absolute;
+    top: 0;
+    bottom: 5%; /* Empuja la imagen ligeramente hacia arriba para centrarla visualmente */
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 95%; /* Asegura que abarque la mayor parte del círculo */
+    height: auto;
+    max-height: 95%;
+    object-fit: contain;
+    /* Dithered / Xerox look filter */
+    filter: contrast(1.5) grayscale(1) drop-shadow(0 0 10px rgba(0,0,0,0.5));
+}
+
+/* Right Text Content */
+.text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 2rem;
+    flex: 1;
+    max-width: 600px;
+}
+
+.main-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    position: relative;
+}
+
+.title-img {
+    height: 140px;
+    object-fit: contain;
+    filter: invert(1); /* Black to white */
+}
+
+.tm {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+.subtitle {
+    margin-top: 15px;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    color: var(--fg-color);
+}
+
+/* Scroll Prompt */
+.scroll-prompt {
+    position: absolute;
+    bottom: 2rem;
+    right: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+    letter-spacing: 2px;
+}
+
+.scroll-prompt .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid white;
+    padding: 5px;
+    border-radius: 0; 
+}
+
+.scroll-prompt .arrow svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* =========================================
+   SECTION 2: ABOUT / WHO IS NOUSGIRL
+   ========================================= */
+.about-section {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0; /* Evitar que se aplaste en flexbox */
+    background-color: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 8rem;
+    z-index: 3;
+}
+
+.about-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1400px;
+    gap: 4rem;
+}
+
+.about-text-block {
+    flex: 1;
+    min-width: 400px;
+}
+
+.section-label {
+    font-family: var(--font-mono);
+    color: var(--accent-grey);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+}
+
+.about-title {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.about-title .who-is {
+    font-family: var(--font-mono); /* Fuente pixelada */
+    font-size: 3.5rem;
+    font-weight: normal;
+    letter-spacing: 2px;
+    color: var(--fg-color);
+}
+
+.about-title .nous-girl-row {
+    display: flex;
+    align-items: center;
+    margin-top: -1rem; /* Acercamos las dos filas */
+}
+
+.about-title .nous {
+    font-family: var(--font-sans); /* Fuente pesada */
+    font-weight: 900;
+    font-size: 6.5rem;
+    letter-spacing: -3px;
+    line-height: 1;
+}
+
+.about-title .girl-box {
+    font-family: var(--font-mono);
+    font-size: 5.5rem;
+    font-weight: normal;
+    background-color: #9DE3F9; /* Azul cielo de la imagen */
+    color: #000; /* Texto en negro para máxima lectura */
+    padding: 0 15px;
+    line-height: 1.1;
+    display: inline-block;
+    transform: skewX(-10deg); /* El paralelogramo inclinado */
+    margin-left: 10px;
+}
+
+.about-title .girl-box span {
+    display: inline-block;
+    transform: skewX(10deg); /* Enderezamos el texto dentro de la caja inclinada */
+}
+
+.about-desc {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #a0a0a0;
+    margin-bottom: 3rem;
+    max-width: 550px;
+}
+
+.about-desc p {
+    margin-bottom: 1.2rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stat-value {
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--accent-grey);
+    font-family: var(--font-mono);
+}
+
+.about-visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 400px;
+}
+
+.glitch-banner-wrapper {
+    position: relative;
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Esquinas cibernéticas */
+.glitch-banner-wrapper::before,
+.glitch-banner-wrapper::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--fg-color);
+}
+
+.glitch-banner-wrapper::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.glitch-banner-wrapper::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+}
+
+.about-banner-img {
+    width: 100%;
+    height: auto;
+    filter: contrast(1.3) grayscale(1);
+    display: block;
+}
+
+/* =========================================
+   SECTION 3: TERMINAL / CONSOLA DE IA
+   ========================================= */
+.terminal-section {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0; /* Necesario para que no se achique en el carril horizontal */
+    background-color: var(--bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 8rem;
+    z-index: 3;
+}
+
+.terminal-container {
+    width: 100%;
+    max-width: 1200px;
+    padding-left: 80px; /* Margen para evitar cruces con el sidebar fijo */
+}
+
+.terminal-window {
+    background: #0a0a0a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+}
+
+.terminal-header {
+    background: #151515;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.term-dots {
+    display: flex;
+    gap: 8px;
+    margin-right: 20px;
+}
+
+.term-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #333;
+}
+
+.term-dots span:nth-child(1) { background: #ff5f56; }
+.term-dots span:nth-child(2) { background: #ffbd2e; }
+.term-dots span:nth-child(3) { background: #27c93f; }
+
+.term-title {
+    font-family: var(--font-mono);
+    color: var(--accent-grey);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+}
+
+.terminal-body {
+    display: flex;
+    min-height: 500px;
+}
+
+.term-sidebar {
+    width: 250px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+}
+
+.term-cmd {
+    background: transparent;
+    border: none;
+    color: var(--accent-grey);
+    font-family: var(--font-mono);
+    text-align: left;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.term-cmd:hover {
+    color: var(--fg-color);
+    background: rgba(255,255,255,0.05);
+}
+
+.term-cmd.active {
+    color: var(--accent-blue);
+    background: rgba(0, 229, 255, 0.05);
+    border-left: 3px solid var(--accent-blue);
+}
+
+.term-content {
+    flex: 1;
+    padding: 2rem 2.5rem;
+    font-family: var(--font-mono);
+    color: var(--accent-blue);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    overflow-y: auto;
+}
+
+.term-output {
+    white-space: pre-wrap;
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    height: 1.2em;
+    background: var(--accent-blue);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* =========================================
+   SECTION 4: TOKENOMICS
+   ========================================= */
+.tokenomics-section {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    padding: 6rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #070707;
+    z-index: 3;
+}
+
+.tokenomics-section .section-title {
+    font-family: var(--font-sans);
+    font-size: 5rem;
+    font-weight: 900;
+    margin-bottom: 4rem;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+}
+
+.token-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 1200px;
+    gap: 4rem;
+    flex-wrap: wrap;
+}
+
+.mockup-3d-wrapper {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.mockup-img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0,229,255,0.1);
+    transition: transform 0.1s ease-out; /* Suavidad para el 3D */
+}
+
+.token-details {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* =========================================
+   SECTION 5: FOOTER & MARQUEE
+   ========================================= */
+.footer-section {
+    position: relative;
+    width: 100vw;
+    background: #050505;
+    z-index: 3;
+    overflow: hidden;
+}
+
+.marquee-container {
+    width: 100vw;
+    padding: 1.5rem 0;
+    background: var(--fg-color);
+    color: var(--bg-color);
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.marquee-content {
+    display: inline-block;
+    animation: marqueeScroll 20s linear infinite;
+}
+
+.marquee-content span {
+    display: inline-block;
+}
+
+.marquee-content .bullet {
+    margin: 0 2rem;
+}
+
+@keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.footer-bottom {
+    padding: 4rem;
+    text-align: center;
+    font-family: var(--font-mono);
+    color: var(--accent-grey);
+    font-size: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* =========================================
+   RESPONSIVE DESIGN (TABLETS & MÓVILES)
+   ========================================= */
+
+/* Tablets & Pantallas Pequeñas (max-width: 1024px) */
+@media screen and (max-width: 1024px) {
+    .hero-content, .terminal-container {
+        padding-left: 20px;
+    }
+    
+    .sidebar-left {
+        left: 2rem;
+    }
+    
+    .about-section, .terminal-section {
+        padding: 4rem 3rem;
+    }
+    
+    .about-title .who-is { font-size: 2.5rem; }
+    .about-title .nous { font-size: 4.5rem; }
+    .about-title .girl-box { font-size: 4rem; }
+    
+    .stats-grid {
+        gap: 1rem;
+    }
+}
+
+/* Teléfonos Móviles (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    /* Desactivar scroll horizontal en CSS (se hará vertical nativo) */
+    .horizontal-wrapper {
+        width: 100%;
+        height: auto;
+    }
+    .horizontal-container {
+        display: block; /* Vuelve a bloque vertical */
+        width: 100%;
+        height: auto;
+    }
+    
+    .hero-section, .about-section, .terminal-section {
+        width: 100%;
+        height: auto; /* Permitir crecer si hay mucho contenido */
+        min-height: 100vh;
+        padding: 6rem 2rem; /* Espacio extra arriba y abajo por la nav bar */
+        flex-direction: column;
+    }
+    
+    /* Layouts en Columna */
+    .hero-content {
+        flex-direction: column;
+        justify-content: center;
+        padding-left: 0;
+        margin-top: 5rem;
+    }
+    
+    .right-panel {
+        display: none; /* Ocultar el scroll prompt grande o colapsarlo */
+    }
+    
+    .mascot-container {
+        width: 300px;
+        height: 300px;
+        margin-top: 2rem;
+    }
+    
+    .title-wrapper h1 {
+        font-size: 4rem;
+        line-height: 0.9;
+    }
+    
+    .about-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+    
+    .about-title {
+        align-items: center;
+    }
+    
+    .about-title .who-is { font-size: 2rem; }
+    .about-title .nous { font-size: 3.5rem; letter-spacing: -1px; }
+    .about-title .girl-box { font-size: 3rem; transform: skewX(-5deg); margin-left: 0; margin-top: 5px; }
+    .about-title .girl-box span { transform: skewX(5deg); }
+    
+    .about-title .nous-girl-row {
+        flex-direction: column;
+        margin-top: 0;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr; /* 1 columna en celulares */
+    }
+    
+    .terminal-container {
+        padding-left: 0;
+    }
+    
+    .terminal-body {
+        flex-direction: column;
+    }
+    
+    .term-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        flex-direction: row;
+        overflow-x: auto; /* Scroll horizontal nativo para las pestañas */
+    }
+    
+    .term-cmd {
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        text-align: center;
+        white-space: nowrap;
+    }
+    
+    .term-cmd.active {
+        border-left: none;
+        border-bottom: 3px solid var(--accent-blue);
+    }
+    
+    .term-content {
+        padding: 1.5rem;
+        min-height: 300px;
+        font-size: 0.9rem;
+    }
+    
+    /* SIDEBAR -> BOTTOM NAVIGATION BAR */
+    .sidebar-left {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        flex-direction: row;
+        justify-content: center;
+        transform: none;
+        background: rgba(7,7,7,0.9);
+        border-top: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        padding: 0 1rem;
+        z-index: 10000;
+    }
+    
+    .tech-icons {
+        flex-direction: row;
+        gap: 2rem;
+    }
+    
+    .section-number {
+        display: none; /* Ocultar los números en móvil */
+    }
+}
