@@ -497,32 +497,30 @@ body {
     margin-bottom: 1.2rem;
 }
 
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+/* Agent Tagline Box */
+.agent-tagline-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    font-family: var(--font-mono);
+    font-size: 2.2rem;
+    color: var(--accent-blue);
+    letter-spacing: 4px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 2rem;
+    margin-top: 2rem;
 }
 
-.stat-box {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.stat-value {
-    font-family: var(--font-mono);
-    font-size: 2.5rem;
+.agent-tagline-box .cyber-bracket {
+    color: var(--fg-color);
     font-weight: bold;
+    opacity: 0.7;
 }
 
-.stat-label {
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    color: var(--accent-grey);
-    font-family: var(--font-mono);
+.agent-tagline-box .tagline-text {
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.3); /* Premium glowing effect */
 }
 
 .about-visual {
@@ -742,8 +740,7 @@ body {
 .mockup-img {
     width: 100%;
     height: auto;
-    border-radius: 12px;
-    box-shadow: 0 25px 50px rgba(0,229,255,0.1);
+    filter: drop-shadow(0 20px 30px rgba(0, 229, 255, 0.2)); /* Shadow follows PNG outline instead of square box */
     transition: transform 0.1s ease-out; /* Suavidad para el 3D */
 }
 
@@ -995,8 +992,10 @@ body {
         margin-top: 0;
     }
     
-    .stats-grid {
-        grid-template-columns: 1fr; /* 1 columna en celulares */
+    .agent-tagline-box {
+        justify-content: center;
+        font-size: 1.5rem;
+        letter-spacing: 2px;
     }
     
     .terminal-container {
@@ -1105,8 +1104,9 @@ body {
     .about-title .nous { font-size: 2.5rem; }
     .about-title .girl-box { font-size: 2.2rem; }
     
-    .stat-value {
-        font-size: 2rem;
+    .agent-tagline-box {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
     }
     
     .term-content {
