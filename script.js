@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Revelación de textos gigantes (NOUS GIRL)
       .from(".title-img", { x: 50, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power4.out" }, "-=0.6")
-      .from(".tm", { opacity: 0, duration: 0.5 }, "-=0.4")
       
       // Subtítulo
       .from(".subtitle", { y: 20, opacity: 0, duration: 0.6, ease: "power3.out" }, "-=0.4")
@@ -48,6 +47,28 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         setTimeout(glitchAnim, 2500); // Empezar una vez termine la animación inicial
     });
+
+    // Efecto Glitch Lento para la palabra NOUS
+    const nousWord = document.querySelector(".nous-word");
+    if (nousWord) {
+        const slowGlitchAnim = () => {
+            const delay = gsap.utils.random(4, 8); // Sucede menos frecuentemente, cada 4 a 8s
+            gsap.to(nousWord, {
+                x: () => gsap.utils.random(-8, 8), // Sacudida horizontal leve
+                skewX: () => gsap.utils.random(-5, 5), // Distorsión de forma
+                opacity: () => gsap.utils.random(0.6, 0.9), // Variación de luz
+                duration: 0.15, // Parpadeo un poco más lento
+                yoyo: true,
+                repeat: 3, // Ráfaga corta
+                onComplete: () => {
+                    gsap.to(nousWord, { x: 0, skewX: 0, opacity: 1, duration: 0.1 });
+                    slowGlitchAnim(); // Reinicia el ciclo
+                },
+                delay: delay
+            });
+        };
+        setTimeout(slowGlitchAnim, 3500); // Empezar después de que la página se acomode
+    }
 
     // Efecto de movimiento sutil (Parallax/Hover) en la imagen de la chica
     const mascotContainer = document.querySelector('.mascot-container');
@@ -249,6 +270,26 @@ document.addEventListener("DOMContentLoaded", () => {
             typeWriter(terminalData[cmd], termOutput);
         });
     });
+
+    // === HAMBURGER MENU LOGIC ===
+    const hamburger = document.getElementById("hamburger-btn");
+    const navMenu = document.getElementById("nav-menu");
+
+    if (hamburger && navMenu) {
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active");
+            navMenu.classList.toggle("active");
+        });
+
+        // Cerrar menú al hacer clic en un enlace
+        const navLinksList = navMenu.querySelectorAll("a");
+        navLinksList.forEach(link => {
+            link.addEventListener("click", () => {
+                hamburger.classList.remove("active");
+                navMenu.classList.remove("active");
+            });
+        });
+    }
 
     // === 3D TILT EFFECT (TOKENOMICS) ===
     const mockup = document.querySelector(".mockup-img");
